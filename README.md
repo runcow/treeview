@@ -1,1 +1,49 @@
 # treeview
+
+基于RecyclerView实现的treeview。
+
+# start
+
+```
+dependencies {
+    implementation 'com.runcow:treeview:1.0.0'
+}
+
+```
+
+# usage
+
+```
+BaseTreeAdapter<T> adapter = new BaseTreeAdapter<T>(Context context){
+    @Override
+    protected int provideItemLayoutId(int viewType) {
+    
+    }
+    
+    @Override
+    protected void setData(View itemView, TreeNode<OrgBean> node, int viewType) {
+    
+    }
+}
+```
+
+```
+root.setExpanded(true);
+
+adapter.setRoot(root);
+ 
+adapter.setAsyncMode(true);//calculate in asynchronized mode
+ 
+adapter.update();
+```
+ 
+ more:
+ 
+ ```
+ 
+ adapter.setOnNodeClickListener()
+ 
+ adapter.setOnLoadFinishListener()
+ 
+ ```
+

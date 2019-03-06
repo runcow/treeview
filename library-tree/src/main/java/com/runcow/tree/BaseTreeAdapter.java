@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 
 /**
  * @author runcow
- * @time 2019/3/1 15:43
+ * 2019/3/1 15:43
  */
 public abstract class BaseTreeAdapter<T> extends RecyclerView.Adapter<BaseTreeAdapter.ViewHolder<T>>{
 
@@ -83,6 +83,9 @@ public abstract class BaseTreeAdapter<T> extends RecyclerView.Adapter<BaseTreeAd
         }
         mData = TreeNodeHelper.depthFirstSearch(root);
         notifyDataSetChanged();
+        if (onLoadFinishListener != null){
+            onLoadFinishListener.onLoadFinish();
+        }
     }
 
     private void updateAsync(){
