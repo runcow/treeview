@@ -21,13 +21,19 @@ BaseTreeAdapter<T> adapter = new BaseTreeAdapter<T>(Context context){
     }
     
     @Override
-    protected void setData(View itemView, TreeNode<OrgBean> node, int viewType) {
+    protected void setData(View itemView, TreeNode<T> node, int viewType) {
     
     }
 }
+
+RecyclerView.setAdapter(adapter);
 ```
 
 ```
+TreeNode<T> root = new TreeNode<>();
+
+//root.addCihld()...
+
 root.setExpanded(true);
 
 adapter.setRoot(root);
@@ -37,7 +43,7 @@ adapter.setAsyncMode(true);//calculate in asynchronized mode
 adapter.update();
 ```
  
- more:
+more:
  
  ```
  
