@@ -6,7 +6,7 @@
 
 ```
 dependencies {
-    implementation 'com.runcow:treeview:1.0.0'
+    implementation 'com.runcow:treeview:1.0.2'
 }
 
 ```
