@@ -29,7 +29,7 @@ public abstract class BaseTreeAdapter<T> extends RecyclerView.Adapter<BaseTreeAd
     private OnLoadFinishListener onLoadFinishListener;
     private ExecutorService singleThreadExecutor;
     private MyHandler mHandler;
-    private boolean asyncMode = false;
+    private boolean asyncMode = false;//calculate mode
 
     public BaseTreeAdapter(Context context) {
         this.context = context;
