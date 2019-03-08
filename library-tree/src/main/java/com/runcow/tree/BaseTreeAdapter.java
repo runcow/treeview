@@ -30,7 +30,6 @@ public abstract class BaseTreeAdapter<T> extends RecyclerView.Adapter<BaseTreeAd
     private ExecutorService singleThreadExecutor;
     private MyHandler mHandler;
     private boolean asyncMode = false;//calculate mode
-    private int selectedNodePosition;
 
     public BaseTreeAdapter(Context context) {
         this.context = context;
@@ -49,8 +48,8 @@ public abstract class BaseTreeAdapter<T> extends RecyclerView.Adapter<BaseTreeAd
         return selectedNode;
     }
 
-    public int getSelectedNodePosition() {
-        return selectedNodePosition;
+    public List<TreeNode<T>> getData() {
+        return mData;
     }
 
     public void setSelectedNode(TreeNode<T> selectedNode) {
@@ -60,7 +59,6 @@ public abstract class BaseTreeAdapter<T> extends RecyclerView.Adapter<BaseTreeAd
         this.selectedNode = selectedNode;
         this.selectedNode.setSelected(true);
         this.selectedNode.setActive(!this.selectedNode.isActive());
-        selectedNodePosition = mData.indexOf(selectedNode);
     }
 
     public void setRoot(TreeNode<T> root) {

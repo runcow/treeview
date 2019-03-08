@@ -62,6 +62,10 @@ public class TreeNode<T> {
         children.add(child);
     }
 
+    public void setChildren(List<TreeNode<T>> children) {
+        this.children = children;
+    }
+
     public T getValue() {
         return value;
     }
