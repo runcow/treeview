@@ -48,7 +48,7 @@ public abstract class BaseTreeAdapter<T> extends RecyclerView.Adapter<BaseTreeAd
         return selectedNode;
     }
 
-    private void setSelectedNode(TreeNode<T> selectedNode) {
+    public void setSelectedNode(TreeNode<T> selectedNode) {
         if (this.selectedNode != null){
             this.selectedNode.setSelected(false);
         }
