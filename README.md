@@ -42,10 +42,8 @@ adapter.setRoot(root);
 more:
  
  ```
- 
+ //set bean behaviors before update
  adapter.setOnNodeClickListener()
- 
- adapter.setOnLoadFinishListener()
  
  ```
 
