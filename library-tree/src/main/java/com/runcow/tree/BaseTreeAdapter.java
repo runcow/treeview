@@ -1,18 +1,14 @@
 package com.runcow.tree;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author runcow
@@ -20,24 +16,15 @@ import java.util.concurrent.Executors;
  */
 public abstract class BaseTreeAdapter<T> extends RecyclerView.Adapter<BaseTreeAdapter.ViewHolder<T>>{
 
-    private final static int ASYNC_WHAT = 1;
     private LayoutInflater layoutInflater;
     private Context context;
-    private List<TreeNode<T>> mData;
+    private List<TreeNode<T>> mData = new ArrayList<>();
     private TreeNode<T> root,selectedNode;
     private OnNodeClickListener<T> onNodeClickListener;
-    private OnLoadFinishListener onLoadFinishListener;
-    private ExecutorService singleThreadExecutor;
-    private MyHandler mHandler;
-    private boolean asyncMode = false;//calculate mode
 
     public BaseTreeAdapter(Context context) {
         this.context = context;
         this.layoutInflater = LayoutInflater.from(context);
-    }
-
-    public Context getContext() {
-        return context;
     }
 
     public TreeNode<T> getRoot() {
@@ -55,67 +42,53 @@ public abstract class BaseTreeAdapter<T> extends RecyclerView.Adapter<BaseTreeAd
     public void setSelectedNode(TreeNode<T> selectedNode) {
         if (this.selectedNode != null){
             this.selectedNode.setSelected(false);
+            notifyItemChanged(mData.indexOf(this.selectedNode));
         }
         this.selectedNode = selectedNode;
         this.selectedNode.setSelected(true);
         this.selectedNode.setActive(!this.selectedNode.isActive());
+        notifyItemChanged(mData.indexOf(this.selectedNode));
     }
 
     public void setRoot(TreeNode<T> root) {
+        if (this.root != null){
+            mData.clear();
+        }
         this.root = root;
-    }
-
-    public boolean isAsyncMode() {
-        return asyncMode;
-    }
-
-    public void setAsyncMode(boolean asyncMode) {
-        this.asyncMode = asyncMode;
-    }
-
-    public void update(){
-        if (!asyncMode){
-            updateSync();
-        } else {
-            updateAsync();
-        }
-    }
-
-    private void updateSync(){
         if (selectedNode == null){
             selectedNode = root;
         }
-        mData = TreeNodeHelper.depthFirstSearch(root);
+        mData.addAll(TreeNodeHelper.depthFirstSearch(root));
         notifyDataSetChanged();
-        if (onLoadFinishListener != null){
-            onLoadFinishListener.onLoadFinish();
-        }
     }
 
-    private void updateAsync(){
-        if (selectedNode == null){
-            selectedNode = root;
-        }
-        if (singleThreadExecutor == null){
-            singleThreadExecutor = Executors.newSingleThreadExecutor();
-            mHandler = new MyHandler(this);
-        }
-        singleThreadExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                mData = TreeNodeHelper.depthFirstSearch(root);
-                mHandler.sendEmptyMessage(ASYNC_WHAT);
+    public void update(TreeNode<T> node){
+        int position = mData.indexOf(node);
+        if (node.getChildren() != null){
+            boolean active = node.isActive();
+            if (!active){
+                //collapse
+                if (node.getChildren() != null){
+                    List<TreeNode<T>> diff = new ArrayList<>();
+                    for (TreeNode<T> c:node.getChildren()){
+                        diff.addAll(TreeNodeHelper.depthFirstSearch(c));
+                    }
+                    for (TreeNode<T> n : diff){
+                        n.setActive(false);
+                    }
+                    mData.removeAll(diff);
+                    notifyItemRangeRemoved(position+1,diff.size());
+                }
+            } else if (node.getChildren() != null && node.getChildren().size() > 0){
+                for (TreeNode<T> c : node.getChildren()){
+                    c.setExpanded(true);
+                }
+                mData.addAll(position+1,node.getChildren());
+                notifyItemRangeInserted(position+1,node.getChildren().size());
             }
-        });
+        }
     }
 
-    public void setOnNodeClickListener(OnNodeClickListener<T> onNodeClickListener) {
-        this.onNodeClickListener = onNodeClickListener;
-    }
-
-    public void setOnLoadFinishListener(OnLoadFinishListener onLoadFinishListener) {
-        this.onLoadFinishListener = onLoadFinishListener;
-    }
 
     @NonNull
     @Override
@@ -158,11 +131,14 @@ public abstract class BaseTreeAdapter<T> extends RecyclerView.Adapter<BaseTreeAd
                 @Override
                 public void onClick(View v) {
                     if (adapter.onNodeClickListener != null){
-                        adapter.onNodeClickListener.onNodeClick(node);
+                        if (!adapter.onNodeClickListener.consumeNodeClick(node)){
+                            adapter.setSelectedNode(node);
+                            adapter.update(node);
+                        }
+                    } else {
+                        adapter.setSelectedNode(node);
+                        adapter.update(node);
                     }
-                    TreeNodeHelper.expend(node);
-                    adapter.setSelectedNode(node);
-                    adapter.update();
                 }
             });
         }
@@ -175,33 +151,8 @@ public abstract class BaseTreeAdapter<T> extends RecyclerView.Adapter<BaseTreeAd
 
     }
 
-    private static class MyHandler extends Handler {
-
-        private WeakReference<BaseTreeAdapter> adapterWeakReference;
-
-        MyHandler(BaseTreeAdapter adapter){
-            adapterWeakReference = new WeakReference<>(adapter);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == ASYNC_WHAT){
-                final BaseTreeAdapter adapter = adapterWeakReference.get();
-                if(adapter != null){
-                    adapter.notifyDataSetChanged();
-                    if (adapter.onLoadFinishListener != null){
-                        adapter.onLoadFinishListener.onLoadFinish();
-                    }
-                }
-            }
-        }
-    }
-
     public interface OnNodeClickListener<T>{
-        void onNodeClick(TreeNode<T> node);
+        boolean consumeNodeClick(TreeNode<T> node);
     }
 
-    public interface OnLoadFinishListener {
-        void onLoadFinish();
-    }
 }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.runcow.tree.BaseTreeAdapter;
 import com.runcow.tree.TreeNode;
+import com.runcow.tree.TreeNodeHelper;
 
 /**
  * @author runcow
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                     case VIEW_TYPE_PROVINCE:
                         TextView tvProvince = itemView.findViewById(R.id.tvProvince);
                         ImageView ivArrowProvince = itemView.findViewById(R.id.ivArrowProvince);
-                        tvProvince.setText(node.getValue().getName() + "(expend=" + node.isExpanded() + ",select=" + node.isSelected() + ")");
+                        tvProvince.setText(node.getValue().getName() + "(active=" + node.isActive() + ",select=" + node.isSelected() + ")");
                         if (node.isActive()) {
                             ivArrowProvince.setImageResource(R.drawable.icon_organization_up);
                         } else {
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                     case VIEW_TYPE_NORMAL:
                         TextView tvName = itemView.findViewById(R.id.tvName);
                         ImageView ivArrow = itemView.findViewById(R.id.ivArrow);
-                        tvName.setText(node.getValue().getName() + "(expend=" + node.isExpanded() + ",select=" + node.isSelected() + ")");
+                        tvName.setText(node.getValue().getName() + "(active=" + node.isActive() + ",select=" + node.isSelected() + ")");
                         if (node.isActive()) {
                             ivArrow.setImageResource(R.drawable.icon_organization_up);
                         } else {
@@ -185,35 +186,10 @@ public class MainActivity extends AppCompatActivity {
         huabu.addChild(mmcun);
 
         china.setExpanded(true);
+        china.setSelected(true);
+        china.setActive(true);
+        TreeNodeHelper.expendNode(china,true);
         adapter.setRoot(china);
-        adapter.setAsyncMode(true);
-        adapter.setOnNodeClickListener(new BaseTreeAdapter.OnNodeClickListener<OrgBean>() {
-            @Override
-            public void onNodeClick(TreeNode<OrgBean> node) {
-                showLoading();
-            }
-        });
-        adapter.setOnLoadFinishListener(new BaseTreeAdapter.OnLoadFinishListener() {
-            @Override
-            public void onLoadFinish() {
-                //recyclerView.postDelayed(new Runnable() {
-                //    @Override
-                //    public void run() {
-                //        hideLoading();
-                //    }
-                //},1000);
-                hideLoading();
-            }
-        });
-        adapter.update();
-    }
-
-    private void showLoading() {
-
-    }
-
-    private void hideLoading() {
-
     }
 
     public int getNodeMargin() {

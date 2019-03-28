@@ -26,26 +26,10 @@ public class TreeNodeHelper {
         return list;
     }
 
-    public static <T> void expend(TreeNode<T> node) {
-        if (node != null && node.getChildren() != null){
-            for (TreeNode<T> t:node.getChildren()) {
-                t.setExpanded(!t.isExpanded());
-                if (!t.isExpanded()){
-                    t.setActive(false);
-                }
-                expendChild(t,false);
-            }
-        }
-    }
-
-    public static <T> void expendChild(TreeNode<T> node,boolean expend) {
+    public static <T> void expendNode(TreeNode<T> node,boolean expend) {
         if (node != null && node.getChildren() != null){
             for (TreeNode<T> t:node.getChildren()) {
                 t.setExpanded(expend);
-                if (!t.isExpanded()){
-                    t.setActive(false);
-                }
-                expendChild(t,expend);
             }
         }
     }
