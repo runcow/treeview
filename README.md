@@ -6,7 +6,7 @@
 
 ```
 dependencies {
-    implementation 'com.runcow:treeview:1.0.3'
+    implementation 'com.runcow:treeview:1.1.0'
 }
 
 ```
@@ -37,10 +37,6 @@ TreeNode<T> root = new TreeNode<>();
 root.setExpanded(true);
 
 adapter.setRoot(root);
- 
-adapter.setAsyncMode(true);//calculate in asynchronized mode
- 
-adapter.update();
 ```
  
 more:
