@@ -3,6 +3,7 @@
 基于RecyclerView实现的treeview。
 
 # start
+[ ![Download](https://api.bintray.com/packages/runcow/AndroidTreeView/treeview/images/download.svg?version=1.1.0) ](https://bintray.com/runcow/AndroidTreeView/treeview/1.1.0/link)
 
 ```
 dependencies {
