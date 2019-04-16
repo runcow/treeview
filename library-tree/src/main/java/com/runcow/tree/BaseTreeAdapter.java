@@ -79,6 +79,7 @@ public abstract class BaseTreeAdapter<T> extends RecyclerView.Adapter<BaseTreeAd
                     }
                     for (TreeNode<T> n : diff){
                         n.setActive(false);
+                        n.setExpanded(false);
                     }
                     mData.removeAll(diff);
                     notifyItemRangeRemoved(position+1,diff.size());
