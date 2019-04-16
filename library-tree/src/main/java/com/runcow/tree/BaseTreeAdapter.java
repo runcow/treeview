@@ -39,6 +39,10 @@ public abstract class BaseTreeAdapter<T> extends RecyclerView.Adapter<BaseTreeAd
         return mData;
     }
 
+    public void setOnNodeClickListener(OnNodeClickListener<T> onNodeClickListener) {
+        this.onNodeClickListener = onNodeClickListener;
+    }
+
     public void setSelectedNode(TreeNode<T> selectedNode) {
         if (this.selectedNode != null){
             this.selectedNode.setSelected(false);
